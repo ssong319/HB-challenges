@@ -34,7 +34,8 @@ def split(astring, splitter):
     for i in range(len(astring)):
         if astring[i: i + sl] == splitter:
             lst.append(astring[start_pos:i])
-            start_pos += i - start_pos + sl
+            #start_pos += i - start_pos + sl
+            start_pos = i + sl
 
     lst.append(astring[start_pos:])
     return lst
@@ -54,7 +55,6 @@ def split(astring, splitter):
         if index != -1:
             out.append(astring[curr_index:index])
             index += len(splitter)
-
         else:
             # couldn't find any more instances of splitter in astring
             out.append(astring[curr_index:])
