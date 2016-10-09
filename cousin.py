@@ -62,7 +62,96 @@ The root node has no cousins::
 
     >>> a.cousins() == set()
     True
+
+    >>> k.find_common_ancestor(k, l) == 'a'
+    True
+
+    >>> k.find_common_ancestor(l, g) == 'c'
+    True
+
+    >>> k.find_common_ancestor(f, g) == 'a'
+    True
+
+    >>> k.find_common_ancestor(i, j) == 'd'
+    True
+
+    >>> k.find_common_ancestor(i, i) == 'i'
+    True
+
+    >>> k.find_common_ancestor(c, l) == 'c'
+    True
+
+    >>> k.find_common_ancestor(a, a) == 'a'
+    True
+
+    >>> k.find_common_ancestor(a, c) == 'a'
+    True
+
+    >>> find_path(a, k) == [a, b, f, k]
+    True
+
+    >>> find_path(a, l) == [a, c, h, l]
+    True
+
+    >>> find_path(a, d) == [a, d]
+    True
+
+    >>> find_path(a, a) == [a]
+    True
+
+    >>> find_path(a, f) == [a, b, f]
+    True
+
+    >>> find_path(a, g) == [a, c, g]
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, k, l) == a
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, l, g) == c
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, f, g) == a
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, i, j) == d
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, i, i) == i
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, a, a) == a
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, a, c) == a
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, c, l) == c
+    True
+
+    >>> a.find_common_ancestor_wo_par(a, e, j) == a
+    True
 """
+
+
+#find respective paths of nodes in a tree given root node, DFS
+def find_path(root, node1, path=[]):
+
+    path = path + [root]
+
+    current = root
+
+    if not current.children and current.data != node1.data:
+        return None
+
+    if current.data == node1.data:
+        return path
+
+    for child in current.children:
+        newpaths = find_path(child, node1, path)
+
+        if newpaths:
+            return newpaths
 
 
 class Node(object):
@@ -135,6 +224,44 @@ class Node(object):
         cousin_set = set(visit)
 
         return cousin_set
+
+
+    def find_common_ancestor(self, node1, node2):
+        """
+        Given two nodes, find the least common ancestor. The ancestor can be the node itself.
+        """
+        #create empty set to keep track of the nodes' respective parents, initialize it with the node itself
+
+        node1_par = set([node1])
+        node2_par = set([node2])
+
+        current1 = node1.parent
+        current2 = node2.parent
+
+        while node1_par & node2_par == set():
+            node1_par.add(current1)
+            node2_par.add(current2)
+
+            if current1:
+                current1 = current1.parent
+            if current2:
+                current2 = current2.parent
+
+        return (node1_par & node2_par).pop().data
+
+
+    def find_common_ancestor_wo_par(self, root, node1, node2):
+        path1 = find_path(root, node1)
+        path2 = find_path(root, node2)
+
+        path1.reverse()
+        path2.reverse()
+
+        for p in path1:
+            if p in path2:
+                return p
+
+
 
 
 
